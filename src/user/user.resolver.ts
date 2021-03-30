@@ -1,9 +1,13 @@
+import { UserService } from './user.service';
+import { User } from './entities/user.entity';
 import { Resolver, Query } from '@nestjs/graphql';
 
-@Resolver()
+@Resolver(() => User)
 export class UserResolver {
-  @Query(() => String)
-  hiNest(): string {
-    return 'hi graphql';
+  constructor(private readonly userService: UserService) {}
+
+  @Query(() => Boolean)
+  hi() {
+    return true;
   }
 }
