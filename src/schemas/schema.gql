@@ -31,6 +31,16 @@ enum UserRole {
   sitter
 }
 
+type ChangePasswordOutput {
+  error: String
+  isSucceeded: Boolean!
+}
+
+type EditProfileOutput {
+  error: String
+  isSucceeded: Boolean!
+}
+
 type UserProfileOutput {
   error: String
   isSucceeded: Boolean!
@@ -56,6 +66,8 @@ type Query {
 type Mutation {
   createAccount(input: CreateAccountInput!): CreateAccountOutput!
   login(input: LoginInput!): LoginOutput!
+  editProfile(input: EditProfileInput!): EditProfileOutput!
+  changePassword(input: ChangePasswordInput!): ChangePasswordOutput!
 }
 
 input CreateAccountInput {
@@ -70,5 +82,14 @@ input CreateAccountInput {
 
 input LoginInput {
   accountId: String!
+  password: String!
+}
+
+input EditProfileInput {
+  name: String
+  email: String
+}
+
+input ChangePasswordInput {
   password: String!
 }

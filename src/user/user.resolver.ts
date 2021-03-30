@@ -1,3 +1,8 @@
+import {
+  ChangePasswordOutput,
+  ChangePasswordInput,
+} from './dtos/change-password.dto';
+import { EditProfileOutput, EditProfileInput } from './dtos/edit-profile.dto';
 import { UserProfileInput, UserProfileOutput } from './dtos/user-profile.dto';
 import { AuthUser } from './../auth/auth-user.decorator';
 import { AuthGuard } from './../auth/auth.guard';
@@ -39,5 +44,23 @@ export class UserResolver {
   @Mutation(() => LoginOutput)
   async login(@Args('input') loginInput: LoginInput): Promise<LoginOutput> {
     return this.userService.login(loginInput);
+  }
+
+  @UseGuards(AuthGuard)
+  @Mutation(() => EditProfileOutput)
+  async editProfile(
+    @AuthUser() authUser: User,
+    @Args('input') editProfileInput: EditProfileInput,
+  ): Promise<EditProfileOutput> {
+    return this.userService.editProfile(authUser.id, editProfileInput);
+  }
+
+  @UseGuards(AuthGuard)
+  @Mutation(() => ChangePasswordOutput)
+  async changePassword(
+    @AuthUser() authUser: User,
+    @Args('input') { password }: ChangePasswordInput,
+  ): Promise<ChangePasswordOutput> {
+    return this.userService.changePassword(authUser.id, password);
   }
 }
