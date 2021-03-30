@@ -2,7 +2,10 @@ import {
   ChangePasswordOutput,
   ChangePasswordInput,
 } from './dtos/change-password.dto';
-import { EditProfileOutput, EditProfileInput } from './dtos/edit-profile.dto';
+import {
+  UpdateProfileOutput,
+  UpdateProfileInput,
+} from './dtos/update-profile.dto';
 import { UserProfileInput, UserProfileOutput } from './dtos/user-profile.dto';
 import { AuthUser } from './../auth/auth-user.decorator';
 import { AuthGuard } from './../auth/auth.guard';
@@ -20,8 +23,8 @@ import { UseGuards } from '@nestjs/common';
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
-  @Query(() => User)
   @UseGuards(AuthGuard)
+  @Query(() => User)
   me(@AuthUser() authUser: User) {
     return authUser;
   }
@@ -47,12 +50,12 @@ export class UserResolver {
   }
 
   @UseGuards(AuthGuard)
-  @Mutation(() => EditProfileOutput)
-  async editProfile(
+  @Mutation(() => UpdateProfileOutput)
+  async updateProfile(
     @AuthUser() authUser: User,
-    @Args('input') editProfileInput: EditProfileInput,
-  ): Promise<EditProfileOutput> {
-    return this.userService.editProfile(authUser.id, editProfileInput);
+    @Args('input') editProfileInput: UpdateProfileInput,
+  ): Promise<UpdateProfileOutput> {
+    return this.userService.updateProfile(authUser.id, editProfileInput);
   }
 
   @UseGuards(AuthGuard)

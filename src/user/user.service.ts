@@ -1,5 +1,8 @@
 import { ChangePasswordOutput } from './dtos/change-password.dto';
-import { EditProfileOutput, EditProfileInput } from './dtos/edit-profile.dto';
+import {
+  UpdateProfileOutput,
+  UpdateProfileInput,
+} from './dtos/update-profile.dto';
 import { UserProfileOutput } from './dtos/user-profile.dto';
 import { JwtService } from './../jwt/jwt.service';
 import { LoginInput, LoginOutput } from './dtos/login.dto';
@@ -50,8 +53,6 @@ export class UserService {
   }
 
   async login(loginInput: LoginInput): Promise<LoginOutput> {
-    // check if the password is correct
-    // make a JWT token and give it to the user
     const { accountId, password } = loginInput;
     try {
       const user = await this.userRepository.findOne({ accountId });
@@ -100,10 +101,10 @@ export class UserService {
     }
   }
 
-  async editProfile(
+  async updateProfile(
     userId: number,
-    editProfileInput: EditProfileInput,
-  ): Promise<EditProfileOutput> {
+    editProfileInput: UpdateProfileInput,
+  ): Promise<UpdateProfileOutput> {
     try {
       await this.userRepository.update(userId, {
         ...editProfileInput,
