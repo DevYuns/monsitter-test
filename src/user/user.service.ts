@@ -1,8 +1,10 @@
+import { JwtService } from './../jwt/jwt.service';
 import { LoginInput, LoginOutput } from './dtos/login.dto';
 import {
   CreateAccountInput,
   CreateAccountOutput,
 } from './dtos/create-account.dto';
+import * as jwt from 'jsonwebtoken';
 import { User } from './entities/user.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -12,6 +14,7 @@ import { Repository } from 'typeorm';
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    private readonly jwtService: JwtService,
   ) {}
 
   async createAccount(
@@ -48,30 +51,30 @@ export class UserService {
     // check if the password is correct
     // make a JWT token and give it to the user
     const { accountId, password } = loginInput;
-
-    const user = await this.userRepository.findOne({ accountId });
-    if (!user) {
-      return {
-        isSucceeded: false,
-        error: 'User not found',
-      };
-    }
-
-    const isPwdCorrect = await user.checkPassword(password);
-
-    if (!isPwdCorrect) {
-      return {
-        isSucceeded: false,
-        error: 'Wrong password',
-      };
-    }
-
-    return {
-      isSucceeded: true,
-      token: 'dummy token',
-    };
-
     try {
+      const user = await this.userRepository.findOne({ accountId });
+      if (!user) {
+        return {
+          isSucceeded: false,
+          error: 'User not found',
+        };
+      }
+
+      const isPwdCorrect = await user.checkPassword(password);
+
+      if (!isPwdCorrect) {
+        return {
+          isSucceeded: false,
+          error: 'Wrong password',
+        };
+      }
+
+      const token = this.jwtService.sign({ id: user.id });
+
+      return {
+        isSucceeded: true,
+        token,
+      };
     } catch (error) {
       return {
         isSucceeded: false,
