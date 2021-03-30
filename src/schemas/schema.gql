@@ -31,6 +31,12 @@ enum UserRole {
   sitter
 }
 
+type UserProfileOutput {
+  error: String
+  isSucceeded: Boolean!
+  user: User
+}
+
 type LoginOutput {
   error: String
   isSucceeded: Boolean!
@@ -44,6 +50,7 @@ type CreateAccountOutput {
 
 type Query {
   me: User!
+  userProfile(userId: Float!): UserProfileOutput!
 }
 
 type Mutation {

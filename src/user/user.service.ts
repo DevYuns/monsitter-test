@@ -1,3 +1,4 @@
+import { UserProfileOutput } from './dtos/user-profile.dto';
 import { JwtService } from './../jwt/jwt.service';
 import { LoginInput, LoginOutput } from './dtos/login.dto';
 import {
@@ -82,8 +83,18 @@ export class UserService {
     }
   }
 
-  async findById(id: number): Promise<any> {
-    const user = await this.userRepository.findOneOrFail({ id });
-    return user;
+  async findById(id: number): Promise<UserProfileOutput> {
+    try {
+      const user = await this.userRepository.findOneOrFail({ id });
+      return {
+        isSucceeded: true,
+        user,
+      };
+    } catch (error) {
+      return {
+        isSucceeded: false,
+        error: 'User Not Found',
+      };
+    }
   }
 }
