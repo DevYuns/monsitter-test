@@ -1,6 +1,12 @@
+import { JwtMiddleware } from './jwt/jwt.middleware';
 import { User } from './user/entities/user.entity';
 import { GraphQLModule } from '@nestjs/graphql';
-import { Module } from '@nestjs/common';
+import {
+  Module,
+  NestModule,
+  MiddlewareConsumer,
+  RequestMethod,
+} from '@nestjs/common';
 import { join } from 'path';
 import * as Joi from 'joi';
 import { ConfigModule } from '@nestjs/config';
@@ -39,6 +45,7 @@ import { JwtModule } from './jwt/jwt.module';
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schemas/schema.gql'),
+      context: ({ req }) => ({ user: req['user'] }),
     }),
     UserModule,
     CommonModule,
@@ -49,4 +56,11 @@ import { JwtModule } from './jwt/jwt.module';
   controllers: [],
   providers: [],
 })
-export class AppModule {}
+export class AppModule implements NestModule {
+  configure(consumer: MiddlewareConsumer) {
+    consumer.apply(JwtMiddleware).forRoutes({
+      path: '/graphql',
+      method: RequestMethod.ALL,
+    });
+  }
+}

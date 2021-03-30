@@ -4,7 +4,6 @@ import {
   CreateAccountInput,
   CreateAccountOutput,
 } from './dtos/create-account.dto';
-import * as jwt from 'jsonwebtoken';
 import { User } from './entities/user.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -81,5 +80,10 @@ export class UserService {
         error,
       };
     }
+  }
+
+  async findById(id: number): Promise<any> {
+    const user = await this.userRepository.findOneOrFail({ id });
+    return user;
   }
 }
