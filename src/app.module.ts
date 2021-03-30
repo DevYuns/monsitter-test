@@ -1,11 +1,13 @@
+import { User } from './user/entities/user.entity';
 import { GraphQLModule } from '@nestjs/graphql';
 import { Module } from '@nestjs/common';
 import { join } from 'path';
 import * as Joi from 'joi';
 import { ConfigModule } from '@nestjs/config';
-import { UsersModule } from './users/users.module';
+import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
+import { CommonModule } from './common/common.module';
 
 @Module({
   imports: [
@@ -31,11 +33,13 @@ import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
       database: process.env.DB_NAME,
       synchronize: process.env.NODE_ENV !== 'prod',
       namingStrategy: new SnakeNamingStrategy(),
+      entities: [User],
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schemas/schema.gql'),
     }),
-    UsersModule,
+    UserModule,
+    CommonModule,
   ],
   controllers: [],
   providers: [],
