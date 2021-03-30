@@ -7,7 +7,14 @@ import {
 import { CoreEntity } from './../../common/entities/core.entity';
 import { InternalServerErrorException } from '@nestjs/common';
 import { Entity, Column, BeforeInsert } from 'typeorm';
-import { IsEmail, IsString, IsEnum, IsNumber, IsDate } from 'class-validator';
+import {
+  IsEmail,
+  IsString,
+  IsEnum,
+  IsNumber,
+  IsDate,
+  Length,
+} from 'class-validator';
 import * as bcrypt from 'bcrypt';
 
 enum SexType {
@@ -50,11 +57,13 @@ export class User extends CoreEntity {
   @Column({ unique: true })
   @Field(() => String)
   @IsString()
+  @Length(7)
   accountId: string;
 
   @Column()
   @Field(() => String)
   @IsString()
+  @Length(7)
   password: string;
 
   @Column()
@@ -72,6 +81,15 @@ export class User extends CoreEntity {
     try {
       this.password = await bcrypt.hash(this.password, 10);
     } catch (error) {
+      throw new InternalServerErrorException();
+    }
+  }
+
+  async checkPassword(password: string): Promise<boolean> {
+    try {
+      return bcrypt.compare(password, this.password);
+    } catch (error) {
+      console.log(error);
       throw new InternalServerErrorException();
     }
   }

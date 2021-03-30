@@ -1,3 +1,4 @@
+import { LoginInput, LoginOutput } from './dtos/login.dto';
 import {
   CreateAccountInput,
   CreateAccountOutput,
@@ -16,9 +17,6 @@ export class UserService {
   async createAccount(
     createAccountInput: CreateAccountInput,
   ): Promise<CreateAccountOutput> {
-    // check new user
-    // verifiy password length
-    // create user & hash password
     const { accountId } = createAccountInput;
     try {
       const exists = await this.userRepository.findOne({ accountId });
@@ -42,6 +40,42 @@ export class UserService {
       return {
         isSucceeded: false,
         error: "Couldn't create an account",
+      };
+    }
+  }
+
+  async login(loginInput: LoginInput): Promise<LoginOutput> {
+    // check if the password is correct
+    // make a JWT token and give it to the user
+    const { accountId, password } = loginInput;
+
+    const user = await this.userRepository.findOne({ accountId });
+    if (!user) {
+      return {
+        isSucceeded: false,
+        error: 'User not found',
+      };
+    }
+
+    const isPwdCorrect = await user.checkPassword(password);
+
+    if (!isPwdCorrect) {
+      return {
+        isSucceeded: false,
+        error: 'Wrong password',
+      };
+    }
+
+    return {
+      isSucceeded: true,
+      token: 'dummy token',
+    };
+
+    try {
+    } catch (error) {
+      return {
+        isSucceeded: false,
+        error,
       };
     }
   }
