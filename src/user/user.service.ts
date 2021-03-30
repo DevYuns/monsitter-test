@@ -1,3 +1,6 @@
+import { ChangePasswordOutput } from './dtos/change-password.dto';
+import { EditProfileOutput, EditProfileInput } from './dtos/edit-profile.dto';
+import { UserProfileOutput } from './dtos/user-profile.dto';
 import { JwtService } from './../jwt/jwt.service';
 import { LoginInput, LoginOutput } from './dtos/login.dto';
 import {
@@ -82,8 +85,57 @@ export class UserService {
     }
   }
 
-  async findById(id: number): Promise<any> {
-    const user = await this.userRepository.findOneOrFail({ id });
-    return user;
+  async findById(id: number): Promise<UserProfileOutput> {
+    try {
+      const user = await this.userRepository.findOneOrFail({ id });
+      return {
+        isSucceeded: true,
+        user,
+      };
+    } catch (error) {
+      return {
+        isSucceeded: false,
+        error: 'User Not Found',
+      };
+    }
+  }
+
+  async editProfile(
+    userId: number,
+    editProfileInput: EditProfileInput,
+  ): Promise<EditProfileOutput> {
+    try {
+      await this.userRepository.update(userId, {
+        ...editProfileInput,
+      });
+      return {
+        isSucceeded: true,
+      };
+    } catch (error) {
+      return {
+        isSucceeded: false,
+        error,
+      };
+    }
+  }
+
+  async changePassword(
+    userId: number,
+    password: string,
+  ): Promise<ChangePasswordOutput> {
+    try {
+      const user = await this.userRepository.findOne(userId);
+      user.password = password;
+      await this.userRepository.save(user);
+
+      return {
+        isSucceeded: true,
+      };
+    } catch (error) {
+      return {
+        isSucceeded: false,
+        error,
+      };
+    }
   }
 }
