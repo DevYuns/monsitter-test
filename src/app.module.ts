@@ -13,8 +13,8 @@ import { ConfigModule } from '@nestjs/config';
 import { UserModule } from './user/user.module';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { SnakeNamingStrategy } from 'typeorm-naming-strategies';
-import { CommonModule } from './common/common.module';
 import { JwtModule } from './jwt/jwt.module';
+import { AuthModule } from './auth/auth.module';
 
 @Module({
   imports: [
@@ -47,11 +47,11 @@ import { JwtModule } from './jwt/jwt.module';
       autoSchemaFile: join(process.cwd(), 'src/schemas/schema.gql'),
       context: ({ req }) => ({ user: req['user'] }),
     }),
-    UserModule,
-    CommonModule,
     JwtModule.forRoot({
       secretKey: process.env.SECRET_KEY,
     }),
+    UserModule,
+    AuthModule,
   ],
   controllers: [],
   providers: [],

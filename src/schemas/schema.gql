@@ -2,27 +2,11 @@
 # THIS FILE WAS AUTOMATICALLY GENERATED (DO NOT MODIFY)
 # ------------------------------------------------------
 
-type LoginOutput {
-  error: String
-  isSucceeded: Boolean!
-  token: String
-}
-
-type CreateAccountOutput {
-  error: String
-  isSucceeded: Boolean!
-}
-
-type Query {
-  dummyquery: Boolean!
-}
-
-type Mutation {
-  createAccount(input: CreateAccountInput!): CreateAccountOutput!
-  login(input: LoginInput!): LoginOutput!
-}
-
-input CreateAccountInput {
+type User {
+  id: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  MemberNumber: Float!
   name: String!
   birthday: DateTime!
   sex: SexType!
@@ -45,6 +29,36 @@ enum SexType {
 enum UserRole {
   parent
   sitter
+}
+
+type LoginOutput {
+  error: String
+  isSucceeded: Boolean!
+  token: String
+}
+
+type CreateAccountOutput {
+  error: String
+  isSucceeded: Boolean!
+}
+
+type Query {
+  me: User!
+}
+
+type Mutation {
+  createAccount(input: CreateAccountInput!): CreateAccountOutput!
+  login(input: LoginInput!): LoginOutput!
+}
+
+input CreateAccountInput {
+  name: String!
+  birthday: DateTime!
+  sex: SexType!
+  accountId: String!
+  password: String!
+  email: String!
+  role: [UserRole!]!
 }
 
 input LoginInput {
