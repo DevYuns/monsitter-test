@@ -1,13 +1,24 @@
+import {
+  CreateAccountInput,
+  CreateAccountOutput,
+} from './dtos/create-account.dto';
 import { UserService } from './user.service';
 import { User } from './entities/user.entity';
-import { Resolver, Query } from '@nestjs/graphql';
+import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 
 @Resolver(() => User)
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
   @Query(() => Boolean)
-  hi() {
+  dummyquery() {
     return true;
+  }
+
+  @Mutation(() => CreateAccountOutput)
+  async createAccount(
+    @Args('input') createAccountInput: CreateAccountInput,
+  ): Promise<CreateAccountOutput> {
+    return this.userService.createAccount(createAccountInput);
   }
 }
