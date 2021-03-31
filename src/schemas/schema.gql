@@ -9,7 +9,7 @@ type User {
   memberNumber: Float!
   name: String!
   birthday: DateTime!
-  sex: SexType!
+  gender: GenderType!
   accountId: String!
   password: String!
   email: String!
@@ -25,7 +25,7 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
-enum SexType {
+enum GenderType {
   MALE
   FEMALE
 }
@@ -46,8 +46,18 @@ type Child {
   createdAt: DateTime!
   updatedAt: DateTime!
   birthday: DateTime!
-  sex: SexType!
+  gender: GenderType!
   parent: User!
+}
+
+type CreateAccountOfSitterOutput {
+  error: String
+  isSucceeded: Boolean!
+}
+
+type CreateAccountOfMomOutput {
+  error: String
+  isSucceeded: Boolean!
 }
 
 type AddParentRoleOutput {
@@ -77,32 +87,46 @@ type LoginOutput {
   token: String
 }
 
-type CreateAccountOutput {
-  error: String
-  isSucceeded: Boolean!
-}
-
 type Query {
   me: User!
   userProfile(userId: Float!): UserProfileOutput!
 }
 
 type Mutation {
-  createAccount(input: CreateAccountInput!): CreateAccountOutput!
+  createAccountOfMom(childen: ChildrenInput!, mom: CreateAccountOfMomInput!): CreateAccountOfMomOutput!
+  createAccountOfSitter(input: CreateAccountOfSitterInput!): CreateAccountOfSitterOutput!
   login(input: LoginInput!): LoginOutput!
   updateProfile(input: UpdateProfileInput!): UpdateProfileOutput!
   changePassword(input: ChangePasswordInput!): ChangePasswordOutput!
   addParentRole(input: AddParentRoleInput!): AddParentRoleOutput!
 }
 
-input CreateAccountInput {
+input ChildrenInput {
+  birthday: DateTime!
+  gender: GenderType!
+}
+
+input CreateAccountOfMomInput {
   name: String!
   birthday: DateTime!
-  sex: SexType!
+  gender: GenderType!
   accountId: String!
   password: String!
   email: String!
   roles: [UserRole!]!
+  parentDescription: String
+}
+
+input CreateAccountOfSitterInput {
+  name: String!
+  birthday: DateTime!
+  gender: GenderType!
+  accountId: String!
+  password: String!
+  email: String!
+  roles: [UserRole!]!
+  sitterDescription: String
+  careRange: [CareRange!]!
 }
 
 input LoginInput {
@@ -113,15 +137,15 @@ input LoginInput {
 input UpdateProfileInput {
   name: String
   email: String
-  children: [chlidEntity!]
+  children: [ChildEntity!]
   parentDescription: String
   sitterDescription: String
   careRange: [CareRange!]
 }
 
-input chlidEntity {
+input ChildEntity {
   birthday: DateTime!
-  sex: SexType!
+  gender: GenderType!
   parent: UserEntity!
 }
 
@@ -129,12 +153,12 @@ input UserEntity {
   memberNumber: Float!
   name: String!
   birthday: DateTime!
-  sex: SexType!
+  gender: GenderType!
   accountId: String!
   password: String!
   email: String!
   roles: [UserRole!]!
-  children: [chlidEntity!]
+  children: [ChildEntity!]
   parentDescription: String
   sitterDescription: String
   careRange: [CareRange!]!
@@ -145,6 +169,6 @@ input ChangePasswordInput {
 }
 
 input AddParentRoleInput {
-  children: [chlidEntity!]
+  children: [ChildEntity!]
   parentDescription: String
 }

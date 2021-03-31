@@ -16,11 +16,10 @@ import {
   IsDate,
   Length,
   IsOptional,
-  IsArray,
 } from 'class-validator';
 import * as bcrypt from 'bcrypt';
 
-export enum SexType {
+export enum GenderType {
   MALE = 'MALE',
   FEMALE = 'FEMALE',
 }
@@ -36,15 +35,14 @@ enum CareRange {
 }
 
 registerEnumType(UserRole, { name: 'UserRole' });
-registerEnumType(SexType, { name: 'SexType' });
+registerEnumType(GenderType, { name: 'GenderType' });
 registerEnumType(CareRange, { name: 'CareRange' });
 
 @InputType('UserEntity', { isAbstract: true })
 @ObjectType()
 @Entity()
 export class User extends CoreEntity {
-  //TODO: 유니크 키로 자동 생성되로록 바꾸기
-  @Column({ default: 1111, unique: true })
+  @Column({ unique: true })
   @Field(() => Number)
   @IsNumber()
   memberNumber: number;
@@ -59,10 +57,10 @@ export class User extends CoreEntity {
   @IsDate()
   birthday: Date;
 
-  @Column({ type: 'enum', enum: SexType })
-  @Field(() => SexType)
-  @IsEnum(SexType)
-  sex: SexType;
+  @Column({ type: 'enum', enum: GenderType })
+  @Field(() => GenderType)
+  @IsEnum(GenderType)
+  gender: GenderType;
 
   @Column({ unique: true })
   @Field(() => String)
@@ -87,10 +85,8 @@ export class User extends CoreEntity {
   @IsEnum(UserRole, { each: true })
   roles: UserRole[];
 
-  @OneToMany(() => Child, (child) => child.parentId, { nullable: true })
+  @OneToMany(() => Child, (child) => child.parent, { nullable: true })
   @Field(() => [Child], { nullable: true })
-  @IsOptional()
-  @IsArray()
   children?: Child[];
 
   @Column({ nullable: true })
@@ -119,6 +115,11 @@ export class User extends CoreEntity {
     } catch (error) {
       throw new InternalServerErrorException();
     }
+  }
+
+  @BeforeInsert()
+  generateMemberNumber(): void {
+    this.memberNumber = Math.floor(Math.random() * 100);
   }
 
   async checkPassword(password: string): Promise<boolean> {

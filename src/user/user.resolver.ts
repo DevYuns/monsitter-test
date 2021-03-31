@@ -1,3 +1,12 @@
+import {
+  CreateAccountOfSitterInput,
+  CreateAccountOfSitterOutput,
+} from './dtos/create-account-of-sitter.dto';
+import {
+  CreateAccountOfMomInput,
+  CreateAccountOfMomOutput,
+  ChildrenInput,
+} from './dtos/create-account-of-mom.dto';
 import { Role } from './../auth/role.decorator';
 import {
   AddParentRoleInput,
@@ -15,10 +24,6 @@ import { UserProfileInput, UserProfileOutput } from './dtos/user-profile.dto';
 import { AuthUser } from './../auth/auth-user.decorator';
 import { AuthGuard } from './../auth/auth.guard';
 import { LoginOutput, LoginInput } from './dtos/login.dto';
-import {
-  CreateAccountInput,
-  CreateAccountOutput,
-} from './dtos/create-account.dto';
 import { UserService } from './user.service';
 import { User, UserRole } from './entities/user.entity';
 import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
@@ -42,11 +47,22 @@ export class UserResolver {
     return this.userService.findById(userProfileInput.userId);
   }
 
-  @Mutation(() => CreateAccountOutput)
-  async createAccount(
-    @Args('input') createAccountInput: CreateAccountInput,
-  ): Promise<CreateAccountOutput> {
-    return this.userService.createAccount(createAccountInput);
+  @Mutation(() => CreateAccountOfMomOutput)
+  async createAccountOfMom(
+    @Args('mom') createAccountOfMomInput: CreateAccountOfMomInput,
+    @Args('childen') childrenInput: ChildrenInput,
+  ): Promise<CreateAccountOfMomOutput> {
+    return this.userService.createAccountOfMom(
+      createAccountOfMomInput,
+      childrenInput,
+    );
+  }
+
+  @Mutation(() => CreateAccountOfSitterOutput)
+  async createAccountOfSitter(
+    @Args('input') createAccountOfSitterInput: CreateAccountOfSitterInput,
+  ): Promise<CreateAccountOfSitterOutput> {
+    return this.userService.createAccountOfSitter(createAccountOfSitterInput);
   }
 
   @Mutation(() => LoginOutput)
