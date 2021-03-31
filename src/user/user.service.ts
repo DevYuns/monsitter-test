@@ -1,3 +1,13 @@
+import { Child } from './entities/child.entity';
+import {
+  CreateAccountOfSitterInput,
+  CreateAccountOfSitterOutput,
+} from './dtos/create-account-of-sitter.dto';
+import {
+  CreateAccountOfMomInput,
+  CreateAccountOfMomOutput,
+  ChildrenInput,
+} from './dtos/create-account-of-mom.dto';
 import {
   AddParentRoleOutput,
   AddParentRoleInput,
@@ -10,10 +20,6 @@ import {
 import { UserProfileOutput } from './dtos/user-profile.dto';
 import { JwtService } from './../jwt/jwt.service';
 import { LoginInput, LoginOutput } from './dtos/login.dto';
-import {
-  CreateAccountInput,
-  CreateAccountOutput,
-} from './dtos/create-account.dto';
 import { User } from './entities/user.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
@@ -23,16 +29,18 @@ import { Repository } from 'typeorm';
 export class UserService {
   constructor(
     @InjectRepository(User) private readonly userRepository: Repository<User>,
+    @InjectRepository(Child)
+    private readonly childRepository: Repository<Child>,
     private readonly jwtService: JwtService,
   ) {}
 
-  async createAccount(
-    createAccountInput: CreateAccountInput,
-  ): Promise<CreateAccountOutput> {
-    const { accountId } = createAccountInput;
+  async createAccountOfMom(
+    createAccountOfMonInput: CreateAccountOfMomInput,
+    childrenInput: ChildrenInput,
+  ): Promise<CreateAccountOfMomOutput> {
+    const { accountId, roles } = createAccountOfMonInput;
     try {
       const exists = await this.userRepository.findOne({ accountId });
-
       if (exists) {
         return {
           isSucceeded: false,
@@ -40,18 +48,65 @@ export class UserService {
         };
       }
 
+      if (roles[0] !== 'PARENT') {
+        return {
+          isSucceeded: false,
+          error: 'You should set your role to PARENT',
+        };
+      }
+      const newUser = this.userRepository.create({
+        ...createAccountOfMonInput,
+      });
+      await this.userRepository.save(newUser);
+
+      const newChildren = this.childRepository.create({ ...childrenInput });
+      newChildren.parent = newUser;
+
+      await this.childRepository.save(newChildren);
+
+      return {
+        isSucceeded: true,
+      };
+    } catch (error) {
+      console.log(error);
+      return {
+        isSucceeded: false,
+        error,
+      };
+    }
+  }
+
+  async createAccountOfSitter(
+    createAccountOfSitterInput: CreateAccountOfSitterInput,
+  ): Promise<CreateAccountOfSitterOutput> {
+    const { accountId, roles } = createAccountOfSitterInput;
+    try {
+      const exists = await this.userRepository.findOne({ accountId });
+      if (exists) {
+        return {
+          isSucceeded: false,
+          error: 'There is an user with that email already',
+        };
+      }
+
+      if (roles[0] !== 'SITTER') {
+        return {
+          isSucceeded: false,
+          error: 'You should set your role to PARENT',
+        };
+      }
+
       await this.userRepository.save(
-        this.userRepository.create({ ...createAccountInput }),
+        this.userRepository.create({ ...createAccountOfSitterInput }),
       );
       return {
         isSucceeded: true,
       };
     } catch (error) {
       console.log(error);
-
       return {
         isSucceeded: false,
-        error: "Couldn't create an account",
+        error,
       };
     }
   }
@@ -100,7 +155,7 @@ export class UserService {
     } catch (error) {
       return {
         isSucceeded: false,
-        error: 'User Not Found',
+        error,
       };
     }
   }

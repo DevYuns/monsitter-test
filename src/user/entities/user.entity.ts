@@ -1,3 +1,4 @@
+import { validatePassword } from './../../utils/validate-password';
 import { Child } from './child.entity';
 import {
   ObjectType,
@@ -14,13 +15,13 @@ import {
   IsEnum,
   IsNumber,
   IsDate,
-  Length,
+  MinLength,
+  MaxLength,
   IsOptional,
-  IsArray,
 } from 'class-validator';
 import * as bcrypt from 'bcrypt';
 
-export enum SexType {
+export enum GenderType {
   MALE = 'MALE',
   FEMALE = 'FEMALE',
 }
@@ -36,15 +37,14 @@ enum CareRange {
 }
 
 registerEnumType(UserRole, { name: 'UserRole' });
-registerEnumType(SexType, { name: 'SexType' });
+registerEnumType(GenderType, { name: 'GenderType' });
 registerEnumType(CareRange, { name: 'CareRange' });
 
 @InputType('UserEntity', { isAbstract: true })
 @ObjectType()
 @Entity()
 export class User extends CoreEntity {
-  //TODO: 유니크 키로 자동 생성되로록 바꾸기
-  @Column({ default: 1111, unique: true })
+  @Column({ unique: true })
   @Field(() => Number)
   @IsNumber()
   memberNumber: number;
@@ -59,22 +59,24 @@ export class User extends CoreEntity {
   @IsDate()
   birthday: Date;
 
-  @Column({ type: 'enum', enum: SexType })
-  @Field(() => SexType)
-  @IsEnum(SexType)
-  sex: SexType;
+  @Column({ type: 'enum', enum: GenderType })
+  @Field(() => GenderType)
+  @IsEnum(GenderType)
+  gender: GenderType;
 
   @Column({ unique: true })
   @Field(() => String)
   @IsOptional()
   @IsString()
-  @Length(5)
+  @MinLength(5)
+  @MaxLength(15)
   accountId: string;
 
   @Column()
   @Field(() => String)
   @IsString()
-  @Length(7)
+  @MinLength(7)
+  @MaxLength(20)
   password: string;
 
   @Column()
@@ -87,10 +89,8 @@ export class User extends CoreEntity {
   @IsEnum(UserRole, { each: true })
   roles: UserRole[];
 
-  @OneToMany(() => Child, (child) => child.parentId, { nullable: true })
+  @OneToMany(() => Child, (child) => child.parent, { nullable: true })
   @Field(() => [Child], { nullable: true })
-  @IsOptional()
-  @IsArray()
   children?: Child[];
 
   @Column({ nullable: true })
@@ -113,12 +113,24 @@ export class User extends CoreEntity {
 
   @BeforeInsert()
   @BeforeUpdate()
-  async hashPassword(): Promise<void> {
+  async validateAndHashPassword(): Promise<void> {
     try {
-      this.password = await bcrypt.hash(this.password, 10);
+      const isValidateChecked = validatePassword(this.password);
+
+      if (isValidateChecked) {
+        this.password = await bcrypt.hash(this.password, 10);
+      } else {
+        throw Error('password must be with alphabet and number');
+      }
     } catch (error) {
-      throw new InternalServerErrorException();
+      console.log(error);
+      throw new InternalServerErrorException(error);
     }
+  }
+
+  @BeforeInsert()
+  generateMemberNumber(): void {
+    this.memberNumber = Math.floor(Math.random() * 100);
   }
 
   async checkPassword(password: string): Promise<boolean> {
