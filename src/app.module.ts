@@ -1,3 +1,4 @@
+import { Child } from './user/entities/child.entity';
 import { JwtMiddleware } from './jwt/jwt.middleware';
 import { User } from './user/entities/user.entity';
 import { GraphQLModule } from '@nestjs/graphql';
@@ -41,7 +42,7 @@ import { AuthModule } from './auth/auth.module';
       database: process.env.DB_NAME,
       synchronize: process.env.NODE_ENV !== 'prod',
       namingStrategy: new SnakeNamingStrategy(),
-      entities: [User],
+      entities: [User, Child],
     }),
     GraphQLModule.forRoot({
       autoSchemaFile: join(process.cwd(), 'src/schemas/schema.gql'),

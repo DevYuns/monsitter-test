@@ -1,3 +1,16 @@
+<<<<<<< Updated upstream
+=======
+import {
+  AddParentRoleOutput,
+  AddParentRoleInput,
+} from './dtos/add-parent-role.dto';
+import { ChangePasswordOutput } from './dtos/change-password.dto';
+import {
+  UpdateProfileOutput,
+  UpdateProfileInput,
+} from './dtos/update-profile.dto';
+import { UserProfileOutput } from './dtos/user-profile.dto';
+>>>>>>> Stashed changes
 import { JwtService } from './../jwt/jwt.service';
 import { LoginInput, LoginOutput } from './dtos/login.dto';
 import {
@@ -85,5 +98,21 @@ export class UserService {
   async findById(id: number): Promise<any> {
     const user = await this.userRepository.findOneOrFail({ id });
     return user;
+  }
+
+  async addParentRole(
+    userId: number,
+    addParentRoleInput: AddParentRoleInput,
+  ): Promise<AddParentRoleOutput> {
+    try {
+      await this.userRepository.update(userId, {
+        ...addParentRoleInput,
+      });
+    } catch (error) {
+      return {
+        isSucceeded: false,
+        error,
+      };
+    }
   }
 }

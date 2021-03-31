@@ -6,14 +6,18 @@ type User {
   id: Float!
   createdAt: DateTime!
   updatedAt: DateTime!
-  MemberNumber: Float!
+  memberNumber: Float!
   name: String!
   birthday: DateTime!
   sex: SexType!
   accountId: String!
   password: String!
   email: String!
-  role: [UserRole!]!
+  roles: [UserRole!]!
+  children: [Child!]
+  parentDescription: String
+  sitterDescription: String
+  careRange: [CareRange!]!
 }
 
 """
@@ -22,13 +26,33 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 scalar DateTime
 
 enum SexType {
-  male
-  female
+  MALE
+  FEMALE
 }
 
 enum UserRole {
-  parent
-  sitter
+  PARENT
+  SITTER
+}
+
+enum CareRange {
+  INFANT
+  CHILD
+  SCHOOL
+}
+
+type Child {
+  id: Float!
+  createdAt: DateTime!
+  updatedAt: DateTime!
+  birthday: DateTime!
+  sex: SexType!
+  parent: User!
+}
+
+type AddParentRoleOutput {
+  error: String
+  isSucceeded: Boolean!
 }
 
 type LoginOutput {
@@ -49,6 +73,12 @@ type Query {
 type Mutation {
   createAccount(input: CreateAccountInput!): CreateAccountOutput!
   login(input: LoginInput!): LoginOutput!
+<<<<<<< Updated upstream
+=======
+  updateProfile(input: UpdateProfileInput!): UpdateProfileOutput!
+  changePassword(input: ChangePasswordInput!): ChangePasswordOutput!
+  addParentRole(input: AddParentRoleInput!): AddParentRoleOutput!
+>>>>>>> Stashed changes
 }
 
 input CreateAccountInput {
@@ -58,10 +88,52 @@ input CreateAccountInput {
   accountId: String!
   password: String!
   email: String!
-  role: [UserRole!]!
+  roles: [UserRole!]!
 }
 
 input LoginInput {
   accountId: String!
   password: String!
 }
+<<<<<<< Updated upstream
+=======
+
+input UpdateProfileInput {
+  name: String
+  email: String
+  children: [chlidEntity!]
+  parentDescription: String
+  sitterDescription: String
+  careRange: [CareRange!]
+}
+
+input chlidEntity {
+  birthday: DateTime!
+  sex: SexType!
+  parent: UserEntity!
+}
+
+input UserEntity {
+  memberNumber: Float!
+  name: String!
+  birthday: DateTime!
+  sex: SexType!
+  accountId: String!
+  password: String!
+  email: String!
+  roles: [UserRole!]!
+  children: [chlidEntity!]
+  parentDescription: String
+  sitterDescription: String
+  careRange: [CareRange!]!
+}
+
+input ChangePasswordInput {
+  password: String!
+}
+
+input AddParentRoleInput {
+  children: [chlidEntity!]
+  parentDescription: String
+}
+>>>>>>> Stashed changes
