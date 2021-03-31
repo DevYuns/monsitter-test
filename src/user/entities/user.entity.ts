@@ -68,7 +68,7 @@ export class User extends CoreEntity {
   @Field(() => String)
   @IsOptional()
   @IsString()
-  @Length(7)
+  @Length(5)
   accountId: string;
 
   @Column()
@@ -87,7 +87,7 @@ export class User extends CoreEntity {
   @IsEnum(UserRole, { each: true })
   roles: UserRole[];
 
-  @OneToMany(() => Child, (child) => child.parent, { nullable: true })
+  @OneToMany(() => Child, (child) => child.parentId, { nullable: true })
   @Field(() => [Child], { nullable: true })
   @IsOptional()
   @IsArray()

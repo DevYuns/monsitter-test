@@ -2,7 +2,7 @@ import { SexType, User } from './user.entity';
 import { Field, InputType, ObjectType } from '@nestjs/graphql';
 import { IsEnum, IsDate } from 'class-validator';
 import { CoreEntity } from './../../common/entities/core.entity';
-import { Column, Entity, ManyToOne } from 'typeorm';
+import { Column, Entity, ManyToOne, RelationId } from 'typeorm';
 
 @InputType('chlidEntity', { isAbstract: true })
 @ObjectType()
@@ -21,4 +21,7 @@ export class Child extends CoreEntity {
   @Field(() => User)
   @ManyToOne(() => User, (user) => user.children, { onDelete: 'CASCADE' })
   parent: User;
+
+  @RelationId((child: Child) => child.parent)
+  parentId: number;
 }
