@@ -71,7 +71,7 @@ export class UserService {
       console.log(error);
       return {
         isSucceeded: false,
-        error: "Couldn't create an account",
+        error,
       };
     }
   }
@@ -106,7 +106,7 @@ export class UserService {
       console.log(error);
       return {
         isSucceeded: false,
-        error: "Couldn't create an account",
+        error,
       };
     }
   }
@@ -155,7 +155,7 @@ export class UserService {
     } catch (error) {
       return {
         isSucceeded: false,
-        error: 'User Not Found',
+        error,
       };
     }
   }

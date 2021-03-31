@@ -1,3 +1,4 @@
+import { validatePassword } from './../../utils/validate-password';
 import { Child } from './child.entity';
 import {
   ObjectType,
@@ -14,7 +15,8 @@ import {
   IsEnum,
   IsNumber,
   IsDate,
-  Length,
+  MinLength,
+  MaxLength,
   IsOptional,
 } from 'class-validator';
 import * as bcrypt from 'bcrypt';
@@ -66,13 +68,15 @@ export class User extends CoreEntity {
   @Field(() => String)
   @IsOptional()
   @IsString()
-  @Length(5)
+  @MinLength(5)
+  @MaxLength(15)
   accountId: string;
 
   @Column()
   @Field(() => String)
   @IsString()
-  @Length(7)
+  @MinLength(7)
+  @MaxLength(20)
   password: string;
 
   @Column()
@@ -109,11 +113,18 @@ export class User extends CoreEntity {
 
   @BeforeInsert()
   @BeforeUpdate()
-  async hashPassword(): Promise<void> {
+  async validateAndHashPassword(): Promise<void> {
     try {
-      this.password = await bcrypt.hash(this.password, 10);
+      const isValidateChecked = validatePassword(this.password);
+
+      if (isValidateChecked) {
+        this.password = await bcrypt.hash(this.password, 10);
+      } else {
+        throw Error('password must be with alphabet and number');
+      }
     } catch (error) {
-      throw new InternalServerErrorException();
+      console.log(error);
+      throw new InternalServerErrorException(error);
     }
   }
 
