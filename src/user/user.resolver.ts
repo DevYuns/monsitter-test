@@ -1,3 +1,8 @@
+import { Role } from './../auth/role.decorator';
+import {
+  AddParentRoleInput,
+  AddParentRoleOutput,
+} from './dtos/add-parent-role.dto';
 import {
   ChangePasswordOutput,
   ChangePasswordInput,
@@ -15,7 +20,7 @@ import {
   CreateAccountOutput,
 } from './dtos/create-account.dto';
 import { UserService } from './user.service';
-import { User } from './entities/user.entity';
+import { User, UserRole } from './entities/user.entity';
 import { Resolver, Mutation, Args, Query } from '@nestjs/graphql';
 import { UseGuards } from '@nestjs/common';
 
@@ -23,14 +28,14 @@ import { UseGuards } from '@nestjs/common';
 export class UserResolver {
   constructor(private readonly userService: UserService) {}
 
-  @UseGuards(AuthGuard)
   @Query(() => User)
+  @Role(['Any'])
   me(@AuthUser() authUser: User) {
     return authUser;
   }
 
-  @UseGuards(AuthGuard)
   @Query(() => UserProfileOutput)
+  @Role(['Any'])
   async userProfile(
     @Args() userProfileInput: UserProfileInput,
   ): Promise<UserProfileOutput> {
@@ -49,8 +54,8 @@ export class UserResolver {
     return this.userService.login(loginInput);
   }
 
-  @UseGuards(AuthGuard)
   @Mutation(() => UpdateProfileOutput)
+  @Role(['Any'])
   async updateProfile(
     @AuthUser() authUser: User,
     @Args('input') editProfileInput: UpdateProfileInput,
@@ -65,5 +70,14 @@ export class UserResolver {
     @Args('input') { password }: ChangePasswordInput,
   ): Promise<ChangePasswordOutput> {
     return this.userService.changePassword(authUser.id, password);
+  }
+
+  @Mutation(() => AddParentRoleOutput)
+  @Role([UserRole.SITTER])
+  async addParentRole(
+    @AuthUser() authUser: User,
+    @Args('input') addParentRoleInput: AddParentRoleInput,
+  ): Promise<AddParentRoleOutput> {
+    return this.userService.addParentRole(authUser.id, addParentRoleInput);
   }
 }

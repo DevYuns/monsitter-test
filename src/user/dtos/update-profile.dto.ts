@@ -7,5 +7,12 @@ export class UpdateProfileOutput extends CoreOutput {}
 
 @InputType()
 export class UpdateProfileInput extends PartialType(
-  PickType(User, ['email', 'name']),
+  PickType(User, [
+    'email',
+    'name',
+    'careRange',
+    'children',
+    'parentDescription',
+    'sitterDescription',
+  ]),
 ) {}

@@ -1,3 +1,7 @@
+import {
+  AddParentRoleOutput,
+  AddParentRoleInput,
+} from './dtos/add-parent-role.dto';
 import { ChangePasswordOutput } from './dtos/change-password.dto';
 import {
   UpdateProfileOutput,
@@ -132,6 +136,22 @@ export class UserService {
       return {
         isSucceeded: true,
       };
+    } catch (error) {
+      return {
+        isSucceeded: false,
+        error,
+      };
+    }
+  }
+
+  async addParentRole(
+    userId: number,
+    addParentRoleInput: AddParentRoleInput,
+  ): Promise<AddParentRoleOutput> {
+    try {
+      await this.userRepository.update(userId, {
+        ...addParentRoleInput,
+      });
     } catch (error) {
       return {
         isSucceeded: false,

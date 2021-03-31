@@ -1,3 +1,4 @@
+import { Child } from './child.entity';
 import {
   ObjectType,
   InputType,
@@ -6,7 +7,7 @@ import {
 } from '@nestjs/graphql';
 import { CoreEntity } from './../../common/entities/core.entity';
 import { InternalServerErrorException } from '@nestjs/common';
-import { Entity, Column, BeforeInsert, BeforeUpdate } from 'typeorm';
+import { Entity, Column, BeforeInsert, BeforeUpdate, OneToMany } from 'typeorm';
 import {
   IsEmail,
   IsString,
@@ -14,30 +15,39 @@ import {
   IsNumber,
   IsDate,
   Length,
+  IsOptional,
+  IsArray,
 } from 'class-validator';
 import * as bcrypt from 'bcrypt';
 
-enum SexType {
-  male = 'MALE',
-  female = 'FEMALE',
+export enum SexType {
+  MALE = 'MALE',
+  FEMALE = 'FEMALE',
 }
-enum UserRole {
-  parent = 'PARENT',
-  sitter = 'SITTER',
+export enum UserRole {
+  PARENT = 'PARENT',
+  SITTER = 'SITTER',
+}
+
+enum CareRange {
+  INFANT = 'INFANT',
+  CHILD = 'CHILD',
+  SCHOOL = 'SCHOOL',
 }
 
 registerEnumType(UserRole, { name: 'UserRole' });
 registerEnumType(SexType, { name: 'SexType' });
+registerEnumType(CareRange, { name: 'CareRange' });
 
-@InputType({ isAbstract: true })
+@InputType('UserEntity', { isAbstract: true })
 @ObjectType()
 @Entity()
 export class User extends CoreEntity {
   //TODO: 유니크 키로 자동 생성되로록 바꾸기
-  @Column({ default: 12345 })
+  @Column({ default: 1111, unique: true })
   @Field(() => Number)
   @IsNumber()
-  MemberNumber: number;
+  memberNumber: number;
 
   @Column()
   @Field(() => String)
@@ -56,6 +66,7 @@ export class User extends CoreEntity {
 
   @Column({ unique: true })
   @Field(() => String)
+  @IsOptional()
   @IsString()
   @Length(7)
   accountId: string;
@@ -73,8 +84,32 @@ export class User extends CoreEntity {
 
   @Column({ type: 'enum', enum: UserRole, array: true })
   @Field(() => [UserRole])
-  @IsEnum(UserRole)
-  role: UserRole[];
+  @IsEnum(UserRole, { each: true })
+  roles: UserRole[];
+
+  @OneToMany(() => Child, (child) => child.parent, { nullable: true })
+  @Field(() => [Child], { nullable: true })
+  @IsOptional()
+  @IsArray()
+  children?: Child[];
+
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  @IsString()
+  parentDescription: string;
+
+  @Column({ nullable: true })
+  @Field(() => String, { nullable: true })
+  @IsOptional()
+  @IsString()
+  sitterDescription: string;
+
+  @Column({ type: 'enum', enum: CareRange, array: true, nullable: true })
+  @Field(() => [CareRange])
+  @IsEnum(CareRange, { each: true })
+  @IsOptional()
+  careRange: CareRange[];
 
   @BeforeInsert()
   @BeforeUpdate()
