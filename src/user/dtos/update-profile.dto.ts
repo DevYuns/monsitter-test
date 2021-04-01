@@ -11,6 +11,7 @@ export class UpdateProfileInput extends PartialType(
     'children',
     'parentDescription',
     'sitterDescription',
+    'careRange',
   ]),
 ) {}
 

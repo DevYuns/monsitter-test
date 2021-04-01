@@ -1,3 +1,4 @@
+import { AddSitterRoleInput } from './dtos/add-sitter-role.dto';
 import { Child } from './entities/child.entity';
 import {
   CreateAccountOfSitterInput,
@@ -20,7 +21,7 @@ import {
 import { UserProfileOutput } from './dtos/user-profile.dto';
 import { JwtService } from './../jwt/jwt.service';
 import { LoginInput, LoginOutput } from './dtos/login.dto';
-import { User } from './entities/user.entity';
+import { User, UserRole } from './entities/user.entity';
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
@@ -202,11 +203,61 @@ export class UserService {
   async addParentRole(
     userId: number,
     addParentRoleInput: AddParentRoleInput,
+    childrenInput: ChildrenInput,
   ): Promise<AddParentRoleOutput> {
     try {
+      const user = await this.userRepository.findOne(userId);
+
+      if (user.roles.length >= 2) {
+        return {
+          isSucceeded: false,
+          error: '이미 모든 역할을 가지고 있습니다',
+        };
+      }
+      user.roles.push(UserRole.PARENT);
+
       await this.userRepository.update(userId, {
+        ...user,
         ...addParentRoleInput,
       });
+
+      const newChildren = this.childRepository.create({ ...childrenInput });
+      newChildren.parent = user;
+
+      await this.childRepository.save(newChildren);
+      return {
+        isSucceeded: true,
+      };
+    } catch (error) {
+      return {
+        isSucceeded: false,
+        error,
+      };
+    }
+  }
+
+  async addSitterRole(
+    userId: number,
+    addSitterRoleInput: AddSitterRoleInput,
+  ): Promise<AddParentRoleOutput> {
+    try {
+      const user = await this.userRepository.findOne(userId);
+
+      if (user.roles.length >= 2) {
+        return {
+          isSucceeded: false,
+          error: '이미 모든 역할을 가지고 있습니다',
+        };
+      }
+      user.roles.push(UserRole.SITTER);
+
+      await this.userRepository.update(userId, {
+        ...user,
+        ...addSitterRoleInput,
+      });
+      return {
+        isSucceeded: true,
+      };
     } catch (error) {
       return {
         isSucceeded: false,
