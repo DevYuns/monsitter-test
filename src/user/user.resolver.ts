@@ -55,7 +55,7 @@ export class UserResolver {
 
   @Mutation(() => CreateAccountOfParentOutput)
   async createAccountOfParent(
-    @Args('mom') createAccountOfParentInput: CreateAccountOfParentInput,
+    @Args('parent') createAccountOfParentInput: CreateAccountOfParentInput,
     @Args('childen') childrenInput: ChildrenInput,
   ): Promise<CreateAccountOfParentOutput> {
     return this.userService.createAccountOfParent(
@@ -66,7 +66,7 @@ export class UserResolver {
 
   @Mutation(() => CreateAccountOfSitterOutput)
   async createAccountOfSitter(
-    @Args('input') createAccountOfSitterInput: CreateAccountOfSitterInput,
+    @Args('sitter') createAccountOfSitterInput: CreateAccountOfSitterInput,
   ): Promise<CreateAccountOfSitterOutput> {
     return this.userService.createAccountOfSitter(createAccountOfSitterInput);
   }

@@ -103,8 +103,8 @@ type Query {
 }
 
 type Mutation {
-  createAccountOfParent(childen: ChildrenInput!, mom: CreateAccountOfParentInput!): CreateAccountOfParentOutput!
-  createAccountOfSitter(input: CreateAccountOfSitterInput!): CreateAccountOfSitterOutput!
+  createAccountOfParent(childen: ChildrenInput!, parent: CreateAccountOfParentInput!): CreateAccountOfParentOutput!
+  createAccountOfSitter(sitter: CreateAccountOfSitterInput!): CreateAccountOfSitterOutput!
   login(input: LoginInput!): LoginOutput!
   updateProfile(input: UpdateProfileInput!): UpdateProfileOutput!
   changePassword(input: ChangePasswordInput!): ChangePasswordOutput!
