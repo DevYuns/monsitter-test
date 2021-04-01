@@ -1,3 +1,7 @@
+import {
+  UpdateChildInfoInput,
+  UpdateChildInfoOutput,
+} from './dtos/update-child-info.dto';
 import { AddSitterRoleInput } from './dtos/add-sitter-role.dto';
 import { Child } from './entities/child.entity';
 import {
@@ -58,12 +62,13 @@ export class UserService {
       const newUser = this.userRepository.create({
         ...createAccountOfParentInput,
       });
-      await this.userRepository.save(newUser);
-
       const newChildren = this.childRepository.create({ ...childrenInput });
-      newChildren.parent = newUser;
 
+      newChildren.parent = newUser;
       await this.childRepository.save(newChildren);
+
+      newUser.children = [newChildren];
+      await this.userRepository.save(newUser);
 
       return {
         isSucceeded: true,
@@ -255,6 +260,29 @@ export class UserService {
         ...user,
         ...addSitterRoleInput,
       });
+      return {
+        isSucceeded: true,
+      };
+    } catch (error) {
+      return {
+        isSucceeded: false,
+        error,
+      };
+    }
+  }
+
+  async updateChildInfo(
+    userId: number,
+    updateChildInfoInput: UpdateChildInfoInput,
+  ): Promise<UpdateChildInfoOutput> {
+    try {
+      const getChild = await this.userRepository.find({ id: userId });
+      const udatedChild = getChild[0].children;
+
+      await this.childRepository.update(udatedChild[0].id, {
+        ...updateChildInfoInput,
+      });
+
       return {
         isSucceeded: true,
       };

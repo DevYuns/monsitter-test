@@ -89,7 +89,10 @@ export class User extends CoreEntity {
   @IsEnum(UserRole, { each: true })
   roles: UserRole[];
 
-  @OneToMany(() => Child, (child) => child.parent, { nullable: true })
+  @OneToMany(() => Child, (child) => child.parent, {
+    nullable: true,
+    eager: true,
+  })
   @Field(() => [Child], { nullable: true })
   children?: Child[];
 
