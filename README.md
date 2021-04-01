@@ -21,6 +21,11 @@ Nest를 활용한 백엔드 서버 구축
 
 ### 코드 실행 및 api 테스트 방법
 
+```tsx
+npm i
+cp .env.sample .env.dev
+```
+
 - 패키지 설치 후, cp 명령어로 env 파일 복사
 - 현재 임시 키 값을 넣어놨으므로, `.env.dev`에 `DB_NAME` `DB_USERNAME` `DB_PASSWORD` 값만 넣어주면 됩니다.
 - 앱 실행 시 테이블은 자동으로 생성됩니다. (`User` 테이블과 `Child` 테이블)
@@ -29,33 +34,28 @@ Nest를 활용한 백엔드 서버 구축
 - 예시
   ![image](https://user-images.githubusercontent.com/58724686/113241893-96817080-92ea-11eb-8447-79db7553572b.png)
 
-```tsx
-npm i
-cp .env.sample .env.dev
-```
-
 ### DB 테이블
 
 #### 유저 테이블
 
 - `Child` 테이블과 `OneToMany` 관계
 
-  | Name               | Type   | required | Constraint       | Description           |
-  | ------------------ | ------ | -------- | ---------------- | --------------------- |
-  | id                 | number | yes      | Primary key      |                       |
-  | created_at         | Date   | yes      | Not Null         |                       |
-  | updated_at         | Date   | yes      | Not Null         |                       |
-  | member_number      | number | yes      | Unique, Not Null | 회원번호 자동생성     |
-  | name               | string | yes      | Not Null         | 회원 이름             |
-  | birthday           | Date   | yes      | Not Null         | 생년원일              |
-  | gender             | enum   | yes      | Not Null         | 성별                  |
-  | account_id         | number | yes      | Unique, Not Null | 회원가입 아이디       |
-  | password           | string | yes      | Not Null         | 비밀번호              |
-  | email              | string | yes      | Not Null         | 이메일                |
-  | roles              | enum   | yes      | Not Null         | 회원 역할             |
-  | parent_description | string |          |                  | 부모 역할만 생성가능  |
-  | sitter_description | string |          |                  | 시터 역할만 생성 가능 |
-  | care_range         | enum   |          |                  | 시터 역할만 생성 가능 |
+| Name               | Type   | required | Constraint       | Description           |
+| ------------------ | ------ | -------- | ---------------- | --------------------- |
+| id                 | number | yes      | Primary key      |                       |
+| created_at         | Date   | yes      | Not Null         |                       |
+| updated_at         | Date   | yes      | Not Null         |                       |
+| member_number      | number | yes      | Unique, Not Null | 회원번호 자동생성     |
+| name               | string | yes      | Not Null         | 회원 이름             |
+| birthday           | Date   | yes      | Not Null         | 생년원일              |
+| gender             | enum   | yes      | Not Null         | 성별                  |
+| account_id         | number | yes      | Unique, Not Null | 회원가입 아이디       |
+| password           | string | yes      | Not Null         | 비밀번호              |
+| email              | string | yes      | Not Null         | 이메일                |
+| roles              | enum   | yes      | Not Null         | 회원 역할             |
+| parent_description | string |          |                  | 부모 역할만 생성가능  |
+| sitter_description | string |          |                  | 시터 역할만 생성 가능 |
+| care_range         | enum   |          |                  | 시터 역할만 생성 가능 |
 
 #### 아이 테이블
 
