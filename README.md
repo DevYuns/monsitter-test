@@ -4,8 +4,8 @@
 
 ### 사용 기술
 
-- ramework : [Nestjs](https://nestjs.com/)
 - Base language : [Typescript](https://www.typescriptlang.org/)
+- Framework : [Nestjs](https://nestjs.com/)
 - Server : [apollo](https://github.com/apollographql/apollo-server)
 - ORM : [typeorm](https://typeorm.io/#/)
 - DB : [postgreSQL](https://www.postgresql.org/)
