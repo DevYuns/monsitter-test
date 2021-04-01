@@ -69,7 +69,7 @@ export class User extends CoreEntity {
   @IsOptional()
   @IsString()
   @MinLength(5)
-  @MaxLength(15)
+  @MaxLength(20)
   accountId: string;
 
   @Column()

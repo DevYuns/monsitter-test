@@ -3,7 +3,10 @@ import { User } from './../entities/user.entity';
 import { PickType, ObjectType, InputType } from '@nestjs/graphql';
 
 @InputType()
-export class AddParentRoleInput extends PickType(User, ['parentDescription']) {}
+export class AddSitterRoleInput extends PickType(User, [
+  'sitterDescription',
+  'careRange',
+]) {}
 
 @ObjectType()
-export class AddParentRoleOutput extends CoreOutput {}
+export class AddSitterRoleOutput extends CoreOutput {}

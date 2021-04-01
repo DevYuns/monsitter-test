@@ -50,6 +50,11 @@ type Child {
   parent: User!
 }
 
+type AddSitterRoleOutput {
+  error: String
+  isSucceeded: Boolean!
+}
+
 type CreateAccountOfSitterOutput {
   error: String
   isSucceeded: Boolean!
@@ -98,7 +103,8 @@ type Mutation {
   login(input: LoginInput!): LoginOutput!
   updateProfile(input: UpdateProfileInput!): UpdateProfileOutput!
   changePassword(input: ChangePasswordInput!): ChangePasswordOutput!
-  addParentRole(input: AddParentRoleInput!): AddParentRoleOutput!
+  addParentRole(childen: ChildrenInput!, input: AddParentRoleInput!): AddParentRoleOutput!
+  addSitterRole(input: AddSitterRoleInput!): AddSitterRoleOutput!
 }
 
 input ChildrenInput {
@@ -169,6 +175,10 @@ input ChangePasswordInput {
 }
 
 input AddParentRoleInput {
-  children: [ChildEntity!]
   parentDescription: String
+}
+
+input AddSitterRoleInput {
+  sitterDescription: String
+  careRange: [CareRange!]!
 }
