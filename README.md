@@ -27,6 +27,8 @@ cp .env.sample .env.dev
 ```
 
 - 패키지 설치 후, cp 명령어로 env 파일 복사
+- 먼저 postgreSQL DB를 생성하셔야 합니다.
+- `DB_NAME`은 생성한 DB 이름, `DB_USERNAME`은 관리자 이름, `DB_PASSWORD`은 임의로 설정한 비밀번호입니다. 비밀번호의 경우 `localhost`에서 실행할 경우, 아무 값을 넣으셔도 무방합니다.
 - 현재 임시 키 값을 넣어놨으므로, `.env.dev`에 `DB_NAME` `DB_USERNAME` `DB_PASSWORD` 값만 넣어주면 됩니다.
 - 앱 실행 시 테이블은 자동으로 생성됩니다. (`User` 테이블과 `Child` 테이블)
 - 플레이그라운드에서 생성된 쿼리와 뮤테이션 명세 확인 및 api 테스트가 가능합니다. 예시 :`https://hocalhost:3000/graphql`
