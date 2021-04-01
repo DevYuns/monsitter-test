@@ -1,4 +1,8 @@
 import {
+  UpdateChildInfoOutput,
+  UpdateChildInfoInput,
+} from './dtos/update-child-info.dto';
+import {
   AddSitterRoleOutput,
   AddSitterRoleInput,
 } from './dtos/add-sitter-role.dto';
@@ -111,5 +115,14 @@ export class UserResolver {
     @Args('input') addSitterRoleInput: AddSitterRoleInput,
   ): Promise<AddSitterRoleOutput> {
     return this.userService.addSitterRole(authUser.id, addSitterRoleInput);
+  }
+
+  @Mutation(() => UpdateChildInfoOutput)
+  @Role([UserRole.PARENT])
+  async updateChildInfo(
+    @AuthUser() authUser: User,
+    @Args('input') updateChildInfoInput: UpdateChildInfoInput,
+  ): Promise<UpdateChildInfoOutput> {
+    return this.userService.updateChildInfo(authUser.id, updateChildInfoInput);
   }
 }
