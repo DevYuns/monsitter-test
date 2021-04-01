@@ -5,10 +5,10 @@ import {
   CreateAccountOfSitterOutput,
 } from './dtos/create-account-of-sitter.dto';
 import {
-  CreateAccountOfMomInput,
-  CreateAccountOfMomOutput,
+  CreateAccountOfParentInput,
+  CreateAccountOfParentOutput,
   ChildrenInput,
-} from './dtos/create-account-of-mom.dto';
+} from './dtos/create-account-of-Parent.dto';
 import {
   AddParentRoleOutput,
   AddParentRoleInput,
@@ -35,28 +35,28 @@ export class UserService {
     private readonly jwtService: JwtService,
   ) {}
 
-  async createAccountOfMom(
-    createAccountOfMonInput: CreateAccountOfMomInput,
+  async createAccountOfParent(
+    createAccountOfParentInput: CreateAccountOfParentInput,
     childrenInput: ChildrenInput,
-  ): Promise<CreateAccountOfMomOutput> {
-    const { accountId, roles } = createAccountOfMonInput;
+  ): Promise<CreateAccountOfParentOutput> {
+    const { accountId, roles } = createAccountOfParentInput;
     try {
       const exists = await this.userRepository.findOne({ accountId });
       if (exists) {
         return {
           isSucceeded: false,
-          error: 'There is an user with that email already',
+          error: '해당 아이디를 가진 유저가 이미 존재합니다.',
         };
       }
 
       if (roles[0] !== 'PARENT') {
         return {
           isSucceeded: false,
-          error: 'You should set your role to PARENT',
+          error: '부모 계정을 생성하기 위해 역할은 부모로 설정되어야 합니다',
         };
       }
       const newUser = this.userRepository.create({
-        ...createAccountOfMonInput,
+        ...createAccountOfParentInput,
       });
       await this.userRepository.save(newUser);
 
@@ -86,14 +86,14 @@ export class UserService {
       if (exists) {
         return {
           isSucceeded: false,
-          error: 'There is an user with that email already',
+          error: '해당 아이디를 가진 유저가 이미 존재합니다.',
         };
       }
 
       if (roles[0] !== 'SITTER') {
         return {
           isSucceeded: false,
-          error: 'You should set your role to PARENT',
+          error: '시터 계정을 생성하기 위해 역할은 시터로 설정되어야 합니다',
         };
       }
 
@@ -119,7 +119,7 @@ export class UserService {
       if (!user) {
         return {
           isSucceeded: false,
-          error: 'User not found',
+          error: '해당 아이디로 유저를 찾을 수 없습니다.',
         };
       }
 
@@ -128,7 +128,7 @@ export class UserService {
       if (!isPwdCorrect) {
         return {
           isSucceeded: false,
-          error: 'Wrong password',
+          error: '비빌번호를 다시 입력해주세요.',
         };
       }
 
@@ -148,7 +148,7 @@ export class UserService {
 
   async findById(id: number): Promise<UserProfileOutput> {
     try {
-      const user = await this.userRepository.findOneOrFail({ id });
+      const user = await this.userRepository.findOne(id);
       return {
         isSucceeded: true,
         user,

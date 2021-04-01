@@ -8,7 +8,6 @@ export class UpdateProfileInput extends PartialType(
     'email',
     'name',
     'careRange',
-    'children',
     'parentDescription',
     'sitterDescription',
     'careRange',

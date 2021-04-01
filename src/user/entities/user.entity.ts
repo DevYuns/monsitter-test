@@ -120,7 +120,7 @@ export class User extends CoreEntity {
       if (isValidateChecked) {
         this.password = await bcrypt.hash(this.password, 10);
       } else {
-        throw Error('password must be with alphabet and number');
+        throw Error('비밀번호는 영문과 숫자를 조합해야 합니다.');
       }
     } catch (error) {
       console.log(error);

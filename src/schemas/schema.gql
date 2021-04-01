@@ -60,7 +60,7 @@ type CreateAccountOfSitterOutput {
   isSucceeded: Boolean!
 }
 
-type CreateAccountOfMomOutput {
+type CreateAccountOfParentOutput {
   error: String
   isSucceeded: Boolean!
 }
@@ -98,7 +98,7 @@ type Query {
 }
 
 type Mutation {
-  createAccountOfMom(childen: ChildrenInput!, mom: CreateAccountOfMomInput!): CreateAccountOfMomOutput!
+  createAccountOfParent(childen: ChildrenInput!, mom: CreateAccountOfParentInput!): CreateAccountOfParentOutput!
   createAccountOfSitter(input: CreateAccountOfSitterInput!): CreateAccountOfSitterOutput!
   login(input: LoginInput!): LoginOutput!
   updateProfile(input: UpdateProfileInput!): UpdateProfileOutput!
@@ -112,7 +112,7 @@ input ChildrenInput {
   gender: GenderType!
 }
 
-input CreateAccountOfMomInput {
+input CreateAccountOfParentInput {
   name: String!
   birthday: DateTime!
   gender: GenderType!
@@ -143,31 +143,9 @@ input LoginInput {
 input UpdateProfileInput {
   name: String
   email: String
-  children: [ChildEntity!]
   parentDescription: String
   sitterDescription: String
   careRange: [CareRange!]
-}
-
-input ChildEntity {
-  birthday: DateTime!
-  gender: GenderType!
-  parent: UserEntity!
-}
-
-input UserEntity {
-  memberNumber: Float!
-  name: String!
-  birthday: DateTime!
-  gender: GenderType!
-  accountId: String!
-  password: String!
-  email: String!
-  roles: [UserRole!]!
-  children: [ChildEntity!]
-  parentDescription: String
-  sitterDescription: String
-  careRange: [CareRange!]!
 }
 
 input ChangePasswordInput {

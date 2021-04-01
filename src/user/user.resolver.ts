@@ -7,10 +7,10 @@ import {
   CreateAccountOfSitterOutput,
 } from './dtos/create-account-of-sitter.dto';
 import {
-  CreateAccountOfMomInput,
-  CreateAccountOfMomOutput,
+  CreateAccountOfParentInput,
+  CreateAccountOfParentOutput,
   ChildrenInput,
-} from './dtos/create-account-of-mom.dto';
+} from './dtos/create-account-of-Parent.dto';
 import { Role } from './../auth/role.decorator';
 import {
   AddParentRoleInput,
@@ -49,13 +49,13 @@ export class UserResolver {
     return this.userService.findById(userProfileInput.userId);
   }
 
-  @Mutation(() => CreateAccountOfMomOutput)
-  async createAccountOfMom(
-    @Args('mom') createAccountOfMomInput: CreateAccountOfMomInput,
+  @Mutation(() => CreateAccountOfParentOutput)
+  async createAccountOfParent(
+    @Args('mom') createAccountOfParentInput: CreateAccountOfParentInput,
     @Args('childen') childrenInput: ChildrenInput,
-  ): Promise<CreateAccountOfMomOutput> {
-    return this.userService.createAccountOfMom(
-      createAccountOfMomInput,
+  ): Promise<CreateAccountOfParentOutput> {
+    return this.userService.createAccountOfParent(
+      createAccountOfParentInput,
       childrenInput,
     );
   }
