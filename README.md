@@ -24,12 +24,20 @@ Nest를 활용한 백엔드 서버 구축
 ```tsx
 npm i
 cp .env.sample .env.dev
+
+// env.sample
+DB_HOST=localhost
+DB_PORT=5432
+DB_USERNAME=
+DB_PASSWORD=
+DB_NAME=
+SECRET_KEY=
 ```
 
 - 패키지 설치 후, cp 명령어로 env 파일 복사
 - 먼저 postgreSQL DB를 생성하셔야 합니다.
 - `DB_NAME`은 생성한 DB 이름, `DB_USERNAME`은 관리자 이름, `DB_PASSWORD`은 임의로 설정한 비밀번호입니다. 비밀번호의 경우 `localhost`에서 실행할 경우, 아무 값을 넣으셔도 무방합니다.
-- 현재 임시 키 값을 넣어놨으므로, `.env.dev`에 `DB_NAME` `DB_USERNAME` `DB_PASSWORD` 값만 넣어주면 됩니다.
+- 현재 편의를 위해 임시 키 값을 넣어놨으므로, `.env.dev`에 `DB_NAME` `DB_USERNAME` `DB_PASSWORD` 값만 넣어주면 됩니다.
 - 앱 실행 시 테이블은 자동으로 생성됩니다. (`User` 테이블과 `Child` 테이블)
 - 플레이그라운드에서 생성된 쿼리와 뮤테이션 명세 확인 및 api 테스트가 가능합니다. 예시 :`https://hocalhost:3000/graphql`
 - `createAccountOfParent` `createAccountOfSitter` `login` 뮤테이션 외에는 `token`이 필요하므로, 플레이그라운드 하단의 `HTTP HEADERS`에 로그인 실행 후 받아온 token 값을 넣어주어야 합니다. 토큰의 키값은 반드시 `jwt`여야만 합니다.
